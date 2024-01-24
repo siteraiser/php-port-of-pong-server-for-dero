@@ -147,7 +147,7 @@ $json = json_encode($json);
 //Creates a transfer to respond to new sales (destination address). 
 //If a smart contract is specified it can transfer that. 
 //If a respond amount is specified it will send that.
-//You have 144 bytes for an out message (link or uuid etc).
+//You have 144 by for an out message (link or uuid etc).
 function payload($ip, $port, $user, $pass, $respond_amount, $addr,  $scid, $out_message){	
 	
 	$data = '{
@@ -280,7 +280,7 @@ while($count++ < 3){	//set to true to run forever
 					if(  					
 						$saved->txid != $entry->txid &&
 						$saved->time != $entry->time && 
-						$saved->amount != $entry->amount && 
+						$saved->amount != $entry->amount && //seems flawed, maybe some work to do here so that the price can stay the same.
 						$saved->address != $entry->address		
 					){
 						//No matching sales, save it
