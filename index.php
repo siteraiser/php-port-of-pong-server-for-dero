@@ -248,8 +248,8 @@ if($export_address_result !=''){
 
 
 //Begin the inifnite loop to check for new transactions not yet processed (and saved to db)
-$count=0;
-while($count++ < 3){	//set to true to run forever 
+//$count=0;
+while(1){	//set to true to run forever 
 	$export_transfers_result =	export_transfers($ip,$port,$user,$pass);
 	$export_transfers_result = json_decode($export_transfers_result);
 	
@@ -339,7 +339,7 @@ while($count++ < 3){	//set to true to run forever
 	}	
 	
 
-	sleep(10);
+	sleep(18);
 }
 
 
