@@ -278,7 +278,7 @@ while($count++ < 3){	//set to true to run forever
 				$save_sale = true;
 			}else{	
 				//There are sales in the storage file / db, compare them to the list returned from the wallet_rpc
-				$txfound= false;
+				//$txfound= false;
 				foreach($storage_array as $saved){		
 					//seems redundant...
 					if(!(  					
