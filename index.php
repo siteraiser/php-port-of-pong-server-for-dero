@@ -43,6 +43,8 @@ function connectionErrors($ch){
 
 
 //API funtions
+
+//Creates a new integrated address
 function export_iaddress($ip,$port,$user,$pass,$d_port,$in_message,$ask_amount){
 	$data = '{
 		"jsonrpc": "2.0",
@@ -96,7 +98,7 @@ $json = json_encode($json);
 
 }
 
-
+//Gets the list of incoming transfers
 function export_transfers($ip,$port,$user,$pass){
 	$data = '{
 		"jsonrpc": "2.0",
@@ -130,6 +132,10 @@ $json = json_encode($json);
 
 }
 
+//Creates a transfer to respond to new sales (destination address). 
+//If a smart contract is specified it can transfer that. 
+//If a respond amount is specified it will send that.
+//You have 144 by for an out message (link or uuid etc).
 function payload($ip, $port, $user, $pass, $respond_amount, $addr,  $scid, $out_message){	
 	
 	$data = '{
@@ -202,7 +208,7 @@ if (!file_exists('assets/')) {
 $pong_dir="assets/";
 $pong_db="$pong_dir/$ask_amount.sales.db";
 $iaddress_text_file="$pong_dir/$ask_amount.iaddress.txt";
-$iaddress_qr_file="$pong_dir/$ask_amount.iaddress_qrcode.png";
+//$iaddress_qr_file="$pong_dir/$ask_amount.iaddress_qrcode.png";
 
 if (!file_exists($pong_db)) {
      touch($pong_db);
@@ -225,6 +231,8 @@ if($export_address_result !=''){
 	outputMessageNow("Can't Get Integrated Address:<br>");
 }
 
+
+//Begin the inifnite loop to check for new transactions not yet processed (and saved to db)
 $count=0;
 while($count++ < 3){	//set to true to run forever 
 	$export_transfers_result =	export_transfers($ip,$port,$user,$pass);
@@ -245,34 +253,36 @@ while($count++ < 3){	//set to true to run forever
 	}
 	foreach($export_transfers_result->result->entries as $entry){
 		
+		
+		//See if there is a payload
 		if(isset($entry->payload_rpc)){
 			
-			$save_sale = false;
-			
+			$save_sale = false;			
+			//Ensure that we are referring to the same amount when no sales are found in db.
 			if(empty($storage_array) && $ask_amount == $entry->amount){
 				$save_sale = true;
-			}else{				
+			}else{	
+				//There are sales in the storage file / db, compare them to the list returned from the wallet_rpc
 				$txfound= false;
-				foreach($storage_array as $saved){
-					
+				foreach($storage_array as $saved){					
 					if(  					
 						$saved->txid != $entry->txid &&
 						$saved->time != $entry->time && 
 						$saved->amount != $entry->amount && 
 						$saved->address != $entry->address		
 					){
+						//No matching sales, save it
 						$save_sale = true;
 					}					
 				}
 			}
 			
-		
 			
 			if($save_sale){
 				
 				outputMessageNow('<br>Saving Sale');				
 				
-				//Find buyer address
+				//Find buyer address in payload
 				foreach($entry->payload_rpc as $payload){
 					if($payload->name == "R" && $payload->datatype == "A"){
 						$address = $payload->value;
@@ -282,7 +292,7 @@ while($count++ < 3){	//set to true to run forever
 				$payload_result = payload($ip, $port, $user, $pass, $respond_amount, $address, $scid, $out_message);
 				$payload_result = json_decode($payload_result);
 			
-				
+				//Ensure that the response transfer is successful
 				if($payload_result != null && $payload_result->result){
 					outputMessageNow("<br>Sent uuid as out message:".$out_message);
 					outputMessageNow("<br>txid:".$payload_result->result->txid);
@@ -293,7 +303,7 @@ while($count++ < 3){	//set to true to run forever
 						"address"=>$address,
 						"txid"=>$entry->txid
 					];
-					//Save the new sale
+					//Save the sales list
 					file_put_contents("$pong_db",json_encode($storage_array));
 					
 				}else{
