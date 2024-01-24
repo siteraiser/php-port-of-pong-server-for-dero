@@ -310,16 +310,16 @@ while(1){	//set to true to run forever
 			
 			if($save_sale && $ask_amount == $entry->amount){
 				
-				outputMessageNow('<br>Saving Sale');				
+				outputMessageNow('<br>Sending Response');				
 				
 				
-				//Send Reponse to buyer
+				//Send Response to buyer
 				$payload_result = payload($ip, $port, $user, $pass, $respond_amount, $address, $scid, $out_message);
 				$payload_result = json_decode($payload_result);
 			
 				//Ensure that the response transfer is successful
 				if($payload_result != null && $payload_result->result){
-					outputMessageNow("<br>Sent uuid as out message:".$out_message);
+					outputMessageNow("<br>Out message:".$out_message);
 					outputMessageNow("<br>txid:".$payload_result->result->txid);
 					//Save if successful
 					$storage_array[] = (object)[
