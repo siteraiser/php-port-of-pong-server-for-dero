@@ -287,7 +287,7 @@ while(1){	//set to true to run forever
 			
 			
 			$save_sale = false;			
-			//Ensure that we are referring to the same amount when no sales are found in db.
+			
 			if(empty($storage_array)){
 				$save_sale = true;
 			}else if(!empty($storage_array)){	
@@ -313,7 +313,7 @@ while(1){	//set to true to run forever
 				}				
 			}
 			
-			
+			//Ensure that we are referring to the same amount and port
 			if($save_sale && $ask_amount == $entry->amount && $d_port == $destination_port){
 				
 				outputMessageNow('<br>Sending Response');				
