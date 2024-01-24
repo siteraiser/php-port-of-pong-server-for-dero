@@ -27,6 +27,22 @@ class UUID {
   }
 }
 
+function connectionErrors($ch){
+	// Check HTTP status code
+	if (!curl_errno($ch)) {
+	  switch ($http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE)) {
+		case 200:  # OK
+		  break;
+		default:
+		  outputMessageNow('<br>Unexpected HTTP code: '. $http_code);
+	  }
+	}else{
+		outputMessageNow("<br>".curl_error($ch) . ' ' . curl_errno($ch));
+	}
+}
+
+
+//API funtions
 function export_iaddress($ip,$port,$user,$pass,$d_port,$in_message,$ask_amount){
 	$data = '{
 		"jsonrpc": "2.0",
@@ -72,17 +88,8 @@ $json = json_encode($json);
 	curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1); 
 	$output = curl_exec($ch);
 	
-	// Check HTTP status code
-	if (!curl_errno($ch)) {
-	  switch ($http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE)) {
-		case 200:  # OK
-		  break;
-		default:
-		  outputMessageNow('Unexpected HTTP code: ', $http_code, "\n");
-	  }
-	}
-
-	//echo curl_error($ch), curl_errno($ch);
+	connectionErrors($ch);
+	
 	curl_close($ch);
 
 	return $output;
@@ -115,17 +122,8 @@ $json = json_encode($json);
 	curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1); 
 	$output = curl_exec($ch);
 	
-	// Check HTTP status code
-	if (!curl_errno($ch)) {
-	  switch ($http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE)) {
-		case 200:  # OK
-		  break;
-		default:
-		 outputMessageNow('Unexpected HTTP code: ', $http_code, "\n");
-	  }
-	}
+	connectionErrors($ch);
 
-	//echo curl_error($ch), curl_errno($ch);
 	curl_close($ch);
 
 	return $output;
@@ -171,28 +169,9 @@ $json = json_encode($json);
 	]);
 
 	curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1); 
-	$output = curl_exec($ch);
-
-
+	$output = curl_exec($ch);	
 	
-	// Check HTTP status code
-	if (!curl_errno($ch)) {
-	  switch ($http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE)) {
-		case 200:  # OK
-		  break;
-		  default: outputMessageNow('Unexpected HTTP code: ', $http_code, "\n");		 
-	  }
-	}
-
-	ob_end_flush();			
-	ob_start();
-	ob_implicit_flush();		
-	echo curl_error($ch), curl_errno($ch);
-	
-	
-	ob_flush();
-	flush();
-	curl_close($ch);
+	connectionErrors($ch);
 
 	return $output;
 
@@ -209,7 +188,7 @@ $port="10103";
 $user="secret";
 $pass="pass";
 $in_message="You are buying something super great";
-$d_port="24862";
+$d_port="24862";//not being used currently
 $uuid=$UUID->v4();
 $out_message=$uuid;
 
