@@ -59,7 +59,7 @@ function connectionErrors($ch){
 //API funtions
 
 //Creates a new integrated address
-//When used as a send to address it will display the in message and fill in the correct amounts as well as allowing a port to be defined (not actually used here)
+//When used as a send to address it will display the in message and fill in the correct amounts as well as allowing a port to be defined 
 function export_iaddress($ip,$port,$user,$pass,$d_port,$in_message,$ask_amount){
 	$data = '{
 		"jsonrpc": "2.0",
