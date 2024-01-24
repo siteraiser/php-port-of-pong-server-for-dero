@@ -202,13 +202,13 @@ $json = json_encode($json);
 $UUID = new UUID;
 
 // Initialize Environment Variables
-$ask_amount="7531"; // this is how much you want coming in
+$ask_amount="6543"; // this is how much you want coming in
 $respond_amount="2"; // this is how much is going out
 $ip = "127.0.0.1";//127.0.0.1:10103 (for Engram cyberdeck)
 $port="10103";
 $user="secret";
 $pass="pass";
-$in_message="You are buying something great";
+$in_message="You are buying something super great";
 $d_port="24862";
 $uuid=$UUID->v4();
 $out_message=$uuid;
@@ -270,7 +270,7 @@ while($count++ < 3){	//set to true to run forever
 			
 			$save_sale = false;
 			
-			if(empty($storage_array)){
+			if(empty($storage_array) && $ask_amount == $entry->amount){
 				$save_sale = true;
 			}else{				
 				$txfound= false;
@@ -338,6 +338,3 @@ function outputMessageNow($message){
 	flush();
 	
 }
-
-
-
