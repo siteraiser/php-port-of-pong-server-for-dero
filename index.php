@@ -243,7 +243,7 @@ if($export_address_result !=''){
 	outputMessageNow("Asking: ".$ask_amount."<br>");
 	outputMessageNow("Sending back: ".$respond_amount."<br>");	
 	outputMessageNow("Port: ".$d_port."<br>");
-	
+	outputMessageNow("Output to buyer: ".$out_message." - number of chars:". strlen($out_message)."/144 <br>");
 	outputMessageNow("A copy of your integrated address has been saved in $pong_dir as a txt file<br>");// and a qr code... try shell_exec() in linux.
 	outputMessageNow("Already processed transactions found in the database will be skipped automatically<br>");
 }else{
