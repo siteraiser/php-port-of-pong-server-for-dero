@@ -7,7 +7,9 @@ A smart contract can also be defined to transfer that as well.
 
 This demo only allows for the currently defined product to respond to sales (one product at a time).
 
-Todo: create more fields to check so that you can delete the records without reprocessing all of the previous transactions. 
+If you change the price and delete all of the records it checks to make sure you are using the current price so at least all of the transactions of any other price will be skipped until you use the same price again.
+Todo: create more fields to check so that you can delete the records without reprocessing all of the previous transactions (for the amount specifed). 
+
 */ 
 set_time_limit(0);//infinite
 class UUID {
