@@ -1,5 +1,8 @@
 <?php 
 /* PHP Dero Pong Server Port by Crazy Carl T. 
+
+Work in progress... 
+
 Fill in the appropriate values to create an integrated dero address.
 When someone buys using the link the pong server will respond when it detects a new sale.
 The response can include a return amount and a return message up to 144 bytes.
@@ -10,7 +13,6 @@ This demo only allows for the currently defined product to respond to sales (one
 If you change the price and delete all of the records it checks to make sure you are using the current price so at least all of the transactions of any other price will be skipped until you use the same price again.
 Todo: create more fields to check so that you can delete the records without reprocessing all of the previous transactions (for the amount specifed). 
 
-In gerenal it seems likely flawed lol 
 */ 
 set_time_limit(0);//infinite
 class UUID {
@@ -269,46 +271,56 @@ while($count++ < 3){	//set to true to run forever
 		
 		//See if there is a payload
 		if(isset($entry->payload_rpc)){
+	
+			
+			//Find buyer address in payload
+			foreach($entry->payload_rpc as $payload){
+				if($payload->name == "R" && $payload->datatype == "A"){
+					$address = $payload->value;
+				}				
+			}	
+			
 			
 			$save_sale = false;			
 			//Ensure that we are referring to the same amount when no sales are found in db.
-			if(empty($storage_array) && $ask_amount == $entry->amount){
+			if(empty($storage_array)){
 				$save_sale = true;
-			}else{	
+			}else if(!empty($storage_array)){	
 				//There are sales in the storage file / db, compare them to the list returned from the wallet_rpc
-				$txfound= false;
-				foreach($storage_array as $saved){					
-					if(  					
-						$saved->txid != $entry->txid &&
-						$saved->time != $entry->time && 
-						$saved->amount != $entry->amount && //seems flawed, maybe some work to do here so that the price can stay the same.
-						$saved->address != $entry->address		
+				$transaction_found= false;
+				foreach($storage_array as $saved){		
+					//seems redundant...
+					if( 					
+						$saved->txid == $entry->txid &&
+						$saved->time == $entry->time && 
+						$saved->amount == $entry->amount && 
+						$saved->address == $address
+						
 					){
-						//No matching sales, save it
-						$save_sale = true;
-					}					
+						$transaction_found= true;
+					}
+						
 				}
+				
+				if(!$transaction_found){
+					$save_sale = true;
+				}				
 			}
 			
 			
-			if($save_sale){
+			if($save_sale && $ask_amount == $entry->amount){
 				
 				outputMessageNow('<br>Saving Sale');				
 				
-				//Find buyer address in payload
-				foreach($entry->payload_rpc as $payload){
-					if($payload->name == "R" && $payload->datatype == "A"){
-						$address = $payload->value;
-					}				
-				}	
+				
 				//Send Reponse to buyer
-				$payload_result = payload($ip, $port, $user, $pass, $respond_amount, $address, $scid, $out_message);
-				$payload_result = json_decode($payload_result);
+				//$payload_result = payload($ip, $port, $user, $pass, $respond_amount, $address, $scid, $out_message);
+				//$payload_result = json_decode($payload_result);
 			
 				//Ensure that the response transfer is successful
-				if($payload_result != null && $payload_result->result){
+				if(1){//$payload_result != null && $payload_result->result
 					outputMessageNow("<br>Sent uuid as out message:".$out_message);
-					outputMessageNow("<br>txid:".$payload_result->result->txid);
+					//outputMessageNow("<br>txid:".$payload_result->result->txid);
 					//Save if successful
 					$storage_array[] = (object)[
 						"time"=>$entry->time,
@@ -327,7 +339,7 @@ while($count++ < 3){	//set to true to run forever
 	}	
 	
 
-	sleep(18);
+	sleep(10);
 }
 
 
