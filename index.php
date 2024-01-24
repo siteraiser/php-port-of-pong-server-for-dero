@@ -13,6 +13,7 @@ This demo only allows for the currently defined product to respond to sales (one
 If you change the price and delete all of the records it checks to make sure you are using the current price so at least all of the transactions of any other price will be skipped until you use the same price again.
 Todo: create more fields to check so that you can delete the records without reprocessing all of the previous transactions (for the amount specifed). 
 
+In gerenal it seems likely flawed lol 
 */ 
 set_time_limit(0);//infinite
 class UUID {
@@ -278,19 +279,17 @@ while($count++ < 3){	//set to true to run forever
 				$save_sale = true;
 			}else{	
 				//There are sales in the storage file / db, compare them to the list returned from the wallet_rpc
-				//$txfound= false;
-				foreach($storage_array as $saved){		
-					//seems redundant...
-					if(!(  					
-						$saved->txid == $entry->txid &&
-						$saved->time == $entry->time && 
-						$saved->amount == $entry->amount && 
-						$saved->address == $entry->address
-						)		
+				$txfound= false;
+				foreach($storage_array as $saved){					
+					if(  					
+						$saved->txid != $entry->txid &&
+						$saved->time != $entry->time && 
+						$saved->amount != $entry->amount && //seems flawed, maybe some work to do here so that the price can stay the same.
+						$saved->address != $entry->address		
 					){
 						//No matching sales, save it
 						$save_sale = true;
-					}			
+					}					
 				}
 			}
 			
