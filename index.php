@@ -1,5 +1,13 @@
 <?php 
-/* PHP Dero Pong Server Port by Crazy Carl T. */ 
+/* PHP Dero Pong Server Port by Crazy Carl T. 
+Fill in the appropriate values to create an integrated dero address.
+When someone buys using the link the pong server will respond when it detects a new sale.
+The response can include a return amount and a return message up to 144 bytes.
+A smart contract can also be defined to transfer that as well.
+
+This demo only allows for the currently defined product to respond to sales (one product at a time).
+
+*/ 
 set_time_limit(0);//infinite
 class UUID {
 	//Thank you commenters in the PHP docs
@@ -45,6 +53,7 @@ function connectionErrors($ch){
 //API funtions
 
 //Creates a new integrated address
+//When used as a send to address it will display the in message and fill in the correct amounts as well as allowing a port to be defined (not actually used here)
 function export_iaddress($ip,$port,$user,$pass,$d_port,$in_message,$ask_amount){
 	$data = '{
 		"jsonrpc": "2.0",
