@@ -7,6 +7,7 @@ A smart contract can also be defined to transfer that as well.
 
 This demo only allows for the currently defined product to respond to sales (one product at a time).
 
+Todo: create more fields to check so that you can delete the records without reprocessing all of the previous transactions. 
 */ 
 set_time_limit(0);//infinite
 class UUID {
