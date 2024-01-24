@@ -8,7 +8,7 @@ When someone buys using the link the pong server will respond when it detects a 
 The response can include a return amount and a return message up to 144 bytes.
 A smart contract can also be defined to transfer that as well.
 
-This demo only allows for the currently defined product to respond to sales (one product at a time).
+You can update the destination port ($d_port) and other details to create a new product and save it as product1.php, product2.php etc and then run multiple instances for different products.
 
 If you change the price and delete all of the records it checks to make sure you are using the current price so at least all of the transactions of any other price will be skipped until you use the same price again.
 Todo: create more fields to check so that you can delete the records without reprocessing all of the previous transactions (for the amount specifed). 
@@ -208,8 +208,8 @@ $ip = "127.0.0.1";//127.0.0.1:10103 (for Engram cyberdeck)
 $port="10103";
 $user="secret";
 $pass="pass";
-$in_message="You are buying something super great 2";
-$d_port="24863";//For multiple products and instances, needs to be unique
+$in_message="You are buying something super great";
+$d_port="24862";//For multiple products and instances, needs to be unique
 $uuid=$UUID->v4();
 $out_message=$uuid;
 
