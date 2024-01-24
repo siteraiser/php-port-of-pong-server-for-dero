@@ -208,8 +208,8 @@ $ip = "127.0.0.1";//127.0.0.1:10103 (for Engram cyberdeck)
 $port="10103";
 $user="secret";
 $pass="pass";
-$in_message="You are buying something super great";
-$d_port="24862";//not being used currently
+$in_message="You are buying something super great 2";
+$d_port="24863";//For multiple products and instances, needs to be unique
 $uuid=$UUID->v4();
 $out_message=$uuid;
 
@@ -240,6 +240,10 @@ if($export_address_result !=''){
 	$iaddress = file_get_contents($iaddress_text_file);
 	//qrencode -o $iaddress_qr_file "$iaddress"
 	outputMessageNow($iaddress."<br>");
+	outputMessageNow("Asking: ".$ask_amount."<br>");
+	outputMessageNow("Sending back: ".$respond_amount."<br>");	
+	outputMessageNow("Port: ".$d_port."<br>");
+	
 	outputMessageNow("A copy of your integrated address has been saved in $pong_dir as a txt file<br>");// and a qr code... try shell_exec() in linux.
 	outputMessageNow("Already processed transactions found in the database will be skipped automatically<br>");
 }else{
@@ -260,7 +264,7 @@ while(1){	//set to true to run forever
 	}
 
 
-	
+
 	//Open the stored data
 	$storage_array = json_decode(file_get_contents("$pong_db"));
 	if($storage_array == '' ){
@@ -268,16 +272,17 @@ while(1){	//set to true to run forever
 	}
 	foreach($export_transfers_result->result->entries as $entry){
 		
-		
+			
 		//See if there is a payload
 		if(isset($entry->payload_rpc)){
-	
-			
+		
 			//Find buyer address in payload
 			foreach($entry->payload_rpc as $payload){
 				if($payload->name == "R" && $payload->datatype == "A"){
 					$address = $payload->value;
-				}				
+				}else if($payload->name == "D" && $payload->datatype == "U"){
+					$destination_port = $payload->value;					
+				}					
 			}	
 			
 			
@@ -294,7 +299,8 @@ while(1){	//set to true to run forever
 						$saved->txid == $entry->txid &&
 						$saved->time == $entry->time && 
 						$saved->amount == $entry->amount && 
-						$saved->address == $address
+						$saved->address == $address &&
+						$saved->port == $destination_port
 						
 					){
 						$transaction_found= true;
@@ -308,7 +314,7 @@ while(1){	//set to true to run forever
 			}
 			
 			
-			if($save_sale && $ask_amount == $entry->amount){
+			if($save_sale && $ask_amount == $entry->amount && $d_port == $destination_port){
 				
 				outputMessageNow('<br>Sending Response');				
 				
@@ -326,7 +332,8 @@ while(1){	//set to true to run forever
 						"time"=>$entry->time,
 						"amount"=>$entry->amount,
 						"address"=>$address,
-						"txid"=>$entry->txid
+						"txid"=>$entry->txid,
+						"port"=>$destination_port
 					];
 					//Save the sales list
 					file_put_contents("$pong_db",json_encode($storage_array));
