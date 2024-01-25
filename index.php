@@ -1,8 +1,6 @@
 <?php 
 /* PHP Dero Pong Server Port by Crazy Carl T. 
 
-Work in progress... 
-
 Fill in the appropriate values to create an integrated dero address.
 When someone buys using the link the pong server will respond when it detects a new sale.
 The response can include a return amount and a return message up to 144 bytes.
@@ -202,14 +200,14 @@ $json = json_encode($json);
 $UUID = new UUID;
 
 // Initialize Environment Variables
-$ask_amount="6543"; // this is how much you want coming in
+$ask_amount="5000"; // this is how much you want coming in .5 == 50000
 $respond_amount="2"; // this is how much is going out
 $ip = "127.0.0.1";//127.0.0.1:10103 (for Engram cyberdeck)
 $port="10103";
 $user="secret";
 $pass="pass";
 $in_message="You are buying something super great";
-$d_port="24862";//For multiple products and instances, needs to be unique
+$d_port="20000";//For multiple products and instances, needs to be unique
 $uuid=$UUID->v4();
 $out_message=$uuid;
 
